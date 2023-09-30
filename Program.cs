@@ -2,11 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore;
 using Vending.Data;
 using Vending.Services;
-using Vending.NetCore.VueCoreConnection;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddSpaStaticFiles(options => options.RootPath = "frontend/dist");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -17,7 +14,9 @@ if (connectionString is not null) {
         options.UseMySQL(connectionString));
 }
 
+builder.Services.AddControllers();
 builder.Services.AddScoped<IOrderService, OrderServiceImpl>();
+builder.Services.AddMvc(option => option.EnableEndpointRouting = false);
 
 var app = builder.Build();
 
@@ -31,25 +30,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseRouting();
-
 app.UseAuthorization();
-
+app.UseMvc();
+app.UseRouting();
 app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Order}/{action=Index}/"
 );
-
-app.UseSpaStaticFiles();
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "frontend";
-    if (builder.Environment.IsDevelopment()) {
-        spa.UseVueDevelopmentServer();
-    }
-}); 
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
 app.Run();
