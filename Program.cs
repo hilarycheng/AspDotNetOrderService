@@ -2,8 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore;
 using Vending.Data;
 using Vending.Services;
+using Vending.NetCore.VueCoreConnection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSpaStaticFiles(options => options.RootPath = "frontend/dist");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -39,5 +42,14 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Order}/{action=Index}/"
 );
+
+app.UseSpaStaticFiles();
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "frontend";
+    if (builder.Environment.IsDevelopment()) {
+        spa.UseVueDevelopmentServer();
+    }
+}); 
 
 app.Run();
