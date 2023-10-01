@@ -1,15 +1,16 @@
 <template>
   <div id="app">
-    <el-table stripe>
-      <el-table-column></el-table-column>
-    </el-table>
+    <OrderList />
   </div>
 </template>
 
 <script>
+import OrderList from './components/OrderList.vue'
+
 export default {
   name: 'App',
   components: {
+    OrderList
   }
 }
 </script>

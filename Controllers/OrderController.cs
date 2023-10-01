@@ -9,23 +9,25 @@ namespace Vending.Controllers
   public class OrderController : Controller
   {
 
-    private readonly VendingContext _context;
-
     private readonly IOrderService orderService;
 
-    public OrderController(VendingContext context, IOrderService orderService)
+    public OrderController(IOrderService orderService)
     {
       Console.WriteLine("OrderController Constructor");
-      _context = context;
       this.orderService = orderService;
     }
 
 
-    public List<OrderDto> Index() {
-      var orderList = orderService.GetOrderList();
-      Console.WriteLine("OrderController Index " + orderList.Count);
+    [Route("/Order/{start:int}")]
+    public OrderDtoResult Index(int start) {
+      var orderList  = orderService.GetOrderList(start);
+      var totalCount = orderService.GetOrderCount();
+      Console.WriteLine($"OrderController Index {start} {orderList.Count}");
 
-      return orderList;
+      return new OrderDtoResult {
+        TotalRecords = totalCount,
+        Records = orderList
+      };
     }
 
   }
